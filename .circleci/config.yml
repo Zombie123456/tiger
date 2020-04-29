@@ -2,8 +2,8 @@ version: 2.1
 jobs:
   push_docker_image:
     docker:
-      - image: chalice/alicloud-sdk
-        name: ALICLOUD
+      - image: google/cloud-sdk
+        name: GCP
     parameters:
       test_project_name:
         type: string
