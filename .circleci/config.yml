@@ -2,8 +2,8 @@ version: 2.1
 jobs:
   push_docker_image:
     docker:
-      - image: google/cloud-sdk
-        name: GCP
+      - image: chalice/alicloud-sdk
+        name: ALICLOUD
     parameters:
       test_project_name:
         type: string
@@ -12,6 +12,8 @@ jobs:
       storage_endpoint:
         type: string
       storage_access_id:
+        type: string
+      storage_name:
         type: string
       docker_username:
         type: string
@@ -28,8 +30,8 @@ jobs:
       - run: docker exec -it $CIRCLE_PROJECT_REPONAME npm run build
       - run: docker cp $CIRCLE_PROJECT_REPONAME:/usr/src/app/dist dist
       - run: config -e << parameters.storage_endpoint >> -i << parameters.storage_access_id >> -k << parameters.storage_secret_key >>  -L CH 
-      - run: ossutil cp dist/ oss://<< parameters.test_project_name >> -r -f
-      - run: ossutil rm -m oss://<< parameters.test_project_name >>/ -r -f
+      - run: ossutil cp dist/ oss://<< parameters.storage_name >> -r -f
+      - run: ossutil rm -m oss://<< parameters.storage_name >>/ -r -f
 
 workflows:
   version: 2
@@ -40,6 +42,7 @@ workflows:
           storage_secret_key: $STORAGE_SECRET_KEY
           storage_endpoint: $STORAGE_ENDPOINT
           storage_access_id: $STORAGE_ACCESS_ID
+          storage_name: $STORAGE_NAME
           docker_username: $DOCKER_USERNAME
           docker_password: $DOCKER_PASSWORD
           filters:
