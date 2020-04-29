@@ -13,7 +13,10 @@ jobs:
         type: string
       storage_access_id:
         type: string
-
+      docker_username:
+        type: string
+      docker_password:
+        type: string
 
     steps:
       - checkout
@@ -36,6 +39,8 @@ workflows:
           storage_secret_key: $STORAGE_SECRET_KEY
           storage_endpoint: $STORAGE_ENDPOINT
           storage_access_id: $STORAGE_ACCESS_ID
+          docker_username: $DOCKER_USERNAME
+          docker_password: $DOCKER_PASSWORD
           filters:
             branches:
               only:
