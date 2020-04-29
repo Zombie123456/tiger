@@ -28,8 +28,8 @@ jobs:
       - run: docker exec -it $CIRCLE_PROJECT_REPONAME npm run build
       - run: docker cp $CIRCLE_PROJECT_REPONAME:/usr/src/app/dist dist
       - run: config -e << parameters.storage_endpoint >> -i << parameters.storage_access_id >> -k << parameters.storage_secret_key >>  -L CH 
-      - run: ossutil cp dist/ oss://<< parameters.test_project_name >> -r -y
-      - run: ossutil rm -m oss://<< parameters.test_project_name >>/ -r -y
+      - run: ossutil cp dist/ oss://<< parameters.test_project_name >> -r -f
+      - run: ossutil rm -m oss://<< parameters.test_project_name >>/ -r -f
 
 workflows:
   version: 2
