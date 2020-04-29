@@ -17,16 +17,16 @@ jobs:
       - run: ossutil cp dist/ oss://<< parameters.project_name >> -r -y
       - run: ossutil rm -m oss://<< parameters.project_name >>/ -r -y
 
-  workflows:
-    version: 2
-    staging_pipeline:
-      jobs:
-        - push_docker_image:
-          project_name: $PROJECT_NAME
-          storage_secret_key: $STORAGE_SECRET_KEY
-          storage_endpoint: $STORAGE_ENDPOINT
-          storage_access_id: $STORAGE_ACCESS_ID
-          filters:
-            branches:
-              only:
-                - master
+workflows:
+  version: 2
+  staging_pipeline:
+    jobs:
+      - push_docker_image:
+        project_name: $PROJECT_NAME
+        storage_secret_key: $STORAGE_SECRET_KEY
+        storage_endpoint: $STORAGE_ENDPOINT
+        storage_access_id: $STORAGE_ACCESS_ID
+        filters:
+          branches:
+            only:
+              - master
