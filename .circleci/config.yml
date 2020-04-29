@@ -1,0 +1,32 @@
+version: 2.1
+jobs:
+  push_docker_image:
+    docker:
+      - image: chalice/alicloud-sdk
+        name: ALICLOUD
+
+    steps:
+      - checkout
+      - run: docker login -u "<< parameters.docker_username >>" -p "<< parameters.docker_password >>"
+      - run: docker build -t << parameters.project_name >>/$CIRCLE_PROJECT_REPONAME:latest .
+      - run: docker push << parameters.project_name >>/$CIRCLE_PROJECT_REPONAME:latest
+      - run: docker run -d --name=$CIRCLE_PROJECT_REPONAME << parameters.project_name >>/$CIRCLE_PROJECT_REPONAME:latest
+      - run: docker exec -it $CIRCLE_PROJECT_REPONAME npm run build
+      - run: docker cp $CIRCLE_PROJECT_REPONAME:/usr/src/app/dist dist
+      - run: config -e << parameters.storage_endpoint >> -i << parameters.storage_access_id >> -k << parameters.storage_secret_key >>  -L CH 
+      - run: ossutil cp dist/ oss://<< parameters.project_name >> -r -y
+      - run: ossutil rm -m oss://<< parameters.project_name >>/ -r -y
+
+  workflows:
+    version: 2
+    staging_pipeline:
+      jobs:
+        - push_docker_image:
+          project_name: $PROJECT_NAME
+          storage_secret_key: $STORAGE_SECRET_KEY
+          storage_endpoint: $STORAGE_ENDPOINT
+          storage_access_id: $STORAGE_ACCESS_ID
+          filters:
+            branches:
+              only:
+                - master
