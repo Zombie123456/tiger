@@ -29,9 +29,9 @@ jobs:
       - run: docker run -d --name=$CIRCLE_PROJECT_REPONAME << parameters.test_project_name >>/$CIRCLE_PROJECT_REPONAME:latest ping google.com
       - run: docker exec -it $CIRCLE_PROJECT_REPONAME npm run build
       - run: docker cp $CIRCLE_PROJECT_REPONAME:/usr/src/app/dist dist
-      - run: ossutil config -e << parameters.storage_endpoint >> -i << parameters.storage_access_id >> -k << parameters.storage_secret_key >>  -L CH 
-      - run: ossutil cp dist/ oss://<< parameters.storage_name >> -r -f
-      - run: ossutil rm -m oss://<< parameters.storage_name >>/ -r -f
+      - run: ossutil config -e << parameters.storage_endpoint >> -i << parameters.storage_access_id >> -k << parameters.storage_secret_key >>  -L CH --config-file ./key
+      - run: ossutil cp dist/ oss://<< parameters.storage_name >>/ -r -f --config-file ./key
+      - run: ossutil rm -m oss://<< parameters.storage_name >>/ -r -f --config-file ./key
 
 workflows:
   version: 2
