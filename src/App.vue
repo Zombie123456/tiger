@@ -1,28 +1,109 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-  </div>
+  <v-app id="app">
+    <side-bar :show-nav="showNav" :username="username"></side-bar>
+    <v-content>
+      <router-view></router-view>
+    </v-content>
+  </v-app>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import SideBar from "./components/SideBar";
+import $ from "./utils/util";
+import api from "@/api/apis";
+import axios from "axios";
 
 export default {
-  name: 'App',
+  name: "App",
+  data() {
+    return {
+      username: "",
+    };
+  },
+  watch: {
+    username(newObj) {
+      window.document.cookie = `username=${newObj}`;
+    },
+  },
   components: {
-    HelloWorld
-  }
-}
+    SideBar,
+  },
+  computed: {
+    showNav() {
+      return this.$route.name !== "login";
+    },
+  },
+  created() {
+    // this.getMy()
+  },
+  methods: {
+    setUpRouterHooks() {
+      this.$router.beforeEach((to, from, next) => {
+        this.routerLoading = true;
+        this.authErrors = [];
+        next();
+      });
+      this.$router.afterEach(() => {
+        this.routerLoading = false;
+      });
+    },
+    setUpAuth() {
+      let refreshTokenInterval;
+      // refresh access token every 5 mins
+      $.setIndicator(
+        () => {
+          refreshTokenInterval = window.setInterval(() => {
+            this.refresh();
+          }, 300000);
+        },
+        () => {
+          window.clearInterval(refreshTokenInterval);
+        }
+      );
+    },
+    getMy() {
+      if (!this.$cookie.get("access_token")) {
+        return;
+      }
+      this.$http.get(api.my).then((response) => {
+        this.username = response.username;
+        this.setUpAuth();
+        this.setUpRouterHooks();
+      });
+    },
+    refresh() {
+      let refreshToken = this.$cookie.get("refresh_token");
+      if (!refreshToken) {
+        return;
+      }
+      this.$http
+        .post(api.refresh_token, {
+          refresh_token: this.$cookie.get("refresh_token"),
+        })
+        .then((data) => {
+          let d = new Date(data.expires_in);
+          // use access_token to access APIs
+          window.document.cookie =
+            "access_token=" +
+            data.access_token +
+            ";path=/;expires=" +
+            d.toGMTString();
+          // use refresh_token to fetch new access_token
+          window.document.cookie =
+            "refresh_token=" +
+            data.refresh_token +
+            ";path=/;expires=" +
+            d.toGMTString();
+          axios.defaults.headers.common["Authorization"] =
+            "Bearer " + data.access_token;
+        });
+    },
+  },
+};
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+#keep .v-navigation-drawer__border {
+  display: none;
 }
 </style>
