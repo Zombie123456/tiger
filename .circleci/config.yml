@@ -49,3 +49,18 @@ workflows:
             branches:
               only:
                 - master
+
+  staging_mobile_pipeline:
+    jobs:
+      - push_docker_image:
+          test_project_name: $TEST_PROJECT_NAME
+          storage_secret_key: $STORAGE_SECRET_KEY
+          storage_endpoint: $STORAGE_ENDPOINT
+          storage_access_id: $STORAGE_ACCESS_ID
+          storage_name: $STORAGE_NAME_MOBILE
+          docker_username: $DOCKER_USERNAME
+          docker_password: $DOCKER_PASSWORD
+          filters:
+            branches:
+              only:
+                - mobile
