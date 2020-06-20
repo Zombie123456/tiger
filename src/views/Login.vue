@@ -82,32 +82,40 @@ export default {
   },
   methods: {
     login() {
-      this.$http.post(api.login, qs.stringify(this.user)).then(
+      axios.post(api.login, qs.stringify(this.user)).then(
         (data) => {
-          let d = new Date(data.expires_in);
-          if (data.access_token) {
-            window.document.cookie =
-              "access_token=" +
-              data.access_token +
-              ";path=/;expires=" +
-              d.toGMTString();
-            axios.defaults.headers.common["Authorization"] =
-              "Bearer " + data.access_token;
+          console.log(data);
+          console.log(data.data);
+          data = data.data;
+          if (data.code === 9009) {
+            this.snackbar = {
+              color: "red",
+              show: true,
+              text: "此账号不能登录",
+            };
+          } else {
+            let d = new Date(data.expires_in);
+            if (data.access_token) {
+              window.document.cookie =
+                "access_token=" +
+                data.access_token +
+                ";path=/;expires=" +
+                d.toGMTString();
+              axios.defaults.headers.common["Authorization"] =
+                "Bearer " + data.access_token;
+            }
+            if (data.refresh_token) {
+              window.document.cookie =
+                "refresh_token=" +
+                data.refresh_token +
+                ";path=/;expires=" +
+                d.toGMTString();
+            }
+            this.$root.getMy();
+            let url = this.$route.query.next;
+            url = url ? decodeURIComponent(url.split("?")[0]) : "/apps";
+            this.$router.push(url);
           }
-          if (data.refresh_token) {
-            window.document.cookie =
-              "refresh_token=" +
-              data.refresh_token +
-              ";path=/;expires=" +
-              d.toGMTString();
-          }
-          if (data.type) {
-            window.document.cookie = "user_type=" + data.type;
-          }
-          this.$root.getMy();
-          let url = this.$route.query.next;
-          url = url ? decodeURIComponent(url.split("?")[0]) : "/apps";
-          this.$router.push(url);
         },
         () => {
           this.snackbar = {

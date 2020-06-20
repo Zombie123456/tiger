@@ -59,7 +59,7 @@ export default new Router({
       },
     },
     {
-      path: "/apps",
+      path: "/",
       name: "Apps",
       component: function(resolve) {
         require(["./views/Main/Apps.vue"], resolve);
@@ -68,121 +68,6 @@ export default new Router({
         icon: "apps",
         auth: true,
         title: i18n.t("nav.apps"),
-      },
-    },
-    {
-      path: "/apps/add",
-      name: "Add Apps",
-      component: function(resolve) {
-        require(["./views/Main/AppsForm.vue"], resolve);
-      },
-      meta: {
-        auth: true,
-        title: i18n.t("nav.add_apps"),
-      },
-    },
-    {
-      path: "/apps/:appsId/",
-      name: "Apps Details",
-      component: function(resolve) {
-        require(["./views/Main/AppsDetails.vue"], resolve);
-      },
-      meta: {
-        auth: true,
-        title: i18n.t("nav.apps_detail"),
-      },
-    },
-    {
-      path: "/apps/:appsId/edit",
-      name: "Edit Apps",
-      component: function(resolve) {
-        require(["./views/Main/AppsForm.vue"], resolve);
-      },
-      meta: {
-        auth: true,
-        title: i18n.t("nav.edit_apps"),
-      },
-    },
-    {
-      path: "/webapps",
-      name: "WebsiteApps",
-      component: function(resolve) {
-        require(["./views/Main/WebsiteApps.vue"], resolve);
-      },
-      meta: {
-        icon: "apps",
-        auth: true,
-        title: i18n.t("nav.apps"),
-      },
-    },
-    {
-      path: "/webapps/:appsId/:websiteId/edit",
-      name: "Edit Web Apps",
-      component: function(resolve) {
-        require(["./views/Main/WebsiteAppsForm.vue"], resolve);
-      },
-      meta: {
-        auth: true,
-        title: i18n.t("nav.edit_apps"),
-      },
-    },
-    {
-      path: "/webapps/:appsId/:websiteId/",
-      name: "Web Apps Details",
-      component: function(resolve) {
-        require(["./views/Main/WebsiteAppsDetails.vue"], resolve);
-      },
-      meta: {
-        auth: true,
-        title: i18n.t("nav.apps_detail"),
-      },
-    },
-    {
-      path: "/websites",
-      name: "Websites",
-      component: function(resolve) {
-        require(["./views/Main/Website.vue"], resolve);
-      },
-      meta: {
-        icon: "web",
-        auth: true,
-        title: i18n.t("nav.websites"),
-      },
-    },
-    {
-      path: "/types",
-      name: "Types",
-      component: function(resolve) {
-        require(["./views/Main/Type.vue"], resolve);
-      },
-      meta: {
-        icon: "new_releases",
-        auth: true,
-        title: i18n.t("nav.types"),
-      },
-    },
-    {
-      path: "/leaderboard",
-      name: "Leaderboard",
-      component: function(resolve) {
-        require(["./views/Main/Leaderboard.vue"], resolve);
-      },
-      meta: {
-        icon: "format_list_numbered",
-        auth: true,
-        title: i18n.t("nav.leaderboard"),
-      },
-    },
-    {
-      path: "/recommended",
-      name: "Recommended",
-      component: function(resolve) {
-        require(["./views/Main/Recommended.vue"], resolve);
-      },
-      meta: {
-        icon: "star_outline",
-        auth: true,
-        title: i18n.t("nav.recommended"),
       },
     },
     {

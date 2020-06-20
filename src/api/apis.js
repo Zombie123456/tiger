@@ -13,10 +13,15 @@ const house = `${host}v1/`;
 
 export default {
   login: `${apps}login/`,
+  logout: `${house}logout/`,
   house: `${house}manager_house/`,
   building: `${house}build_num/`,
+  getStaff: `${house}staff/`,
+  getRole: `${house}role/`,
+  resetPassword: `${house}reset_password/`,
+
   // /v1/build_num/
-  // my: `${auth}my`,
+  my: `${house}my/`,
   // changePassword: `${auth}password`,
   // logout: `${auth}logout`,
   // refresh_token: `${auth}login/refresh`,

@@ -22,6 +22,7 @@ export default {
   },
   watch: {
     username(newObj) {
+      console.log(window.document.cookie);
       window.document.cookie = `username=${newObj}`;
     },
   },
@@ -34,7 +35,7 @@ export default {
     },
   },
   created() {
-    // this.getMy()
+    this.getMy();
   },
   methods: {
     setUpRouterHooks() {
@@ -62,21 +63,34 @@ export default {
       );
     },
     getMy() {
+      console.log("我的");
+
       if (!this.$cookie.get("access_token")) {
         return;
       }
-      this.$http.get(api.my).then((response) => {
-        this.username = response.username;
+      console.log("进来了");
+      axios.get(api.my).then((response) => {
+        console.log(response);
+        console.log(response.data);
+        console.log(response.data.data);
+        this.username = response.data.data.username;
+        console.log(response.data.data.role);
+        console.log(this.$store.store);
+        let save = response.data.data;
+        this.$store.dispatch("saveRole", save);
+        // this.$store.commit("saveRole", save);
+        // this.$store.state.role = save;
         this.setUpAuth();
         this.setUpRouterHooks();
       });
     },
     refresh() {
+      console.log("刷新");
       let refreshToken = this.$cookie.get("refresh_token");
       if (!refreshToken) {
         return;
       }
-      this.$http
+      axios
         .post(api.refresh_token, {
           refresh_token: this.$cookie.get("refresh_token"),
         })
@@ -103,6 +117,9 @@ export default {
 </script>
 
 <style>
+.row {
+  margin: 0;
+}
 #keep .v-navigation-drawer__border {
   display: none;
 }

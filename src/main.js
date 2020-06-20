@@ -7,6 +7,7 @@ import VeeValidate, { Validator } from "vee-validate";
 import zhCN from "vee-validate/dist/locale/zh_CN";
 import locales from "./i18n/locales";
 import VueCookie from "vue-cookie";
+import store from "./store";
 // import { handleError } from "./utils/handleError";
 import router from "./router";
 import axios from "axios";
@@ -41,8 +42,8 @@ if (VueCookie.get("access_token")) {
 // axios.interceptors.response.use(
 //   (response) => {
 //     if (response.status === 200) {
-//       return response.data;
-//     } else if (response.data.code === 9007) {
+//       return response;
+//     } else if (response.data.code === 4010) {
 //       router.push({
 //         path: "/login",
 //         query: {
@@ -50,7 +51,7 @@ if (VueCookie.get("access_token")) {
 //         },
 //       });
 //     } else {
-//       return Promise.reject(handleError(response.data.msg));
+//       return Promise.reject(response.data.msg);
 //     }
 //   },
 //   () => {
@@ -106,6 +107,7 @@ router.afterEach((route) => {
 
 const app = new Vue({
   router,
+  store,
   vuetify,
   i18n,
   ...App,
