@@ -47,6 +47,17 @@ export default new Router({
       },
     },
     {
+      path: "/cars",
+      name: "Cars",
+      component: function(resolve) {
+        require(["./views/Main/Cars.vue"], resolve);
+      },
+      meta: {
+        icon: "apps",
+        title: "车位详情",
+      },
+    },
+    {
       path: "/change_password",
       name: "Change Password",
       component: function(resolve) {

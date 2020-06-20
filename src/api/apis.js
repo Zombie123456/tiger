@@ -8,8 +8,6 @@ const host = process.env.VUE_APP_API_URL;
 
 const apps = `${host}v1/manage/`;
 const house = `${host}v1/`;
-// const auth = `${host}authentication/v1/`;
-// const websites = `${host}websites/v1/`;
 
 export default {
   login: `${apps}login/`,
@@ -19,19 +17,8 @@ export default {
   getStaff: `${house}staff/`,
   getRole: `${house}role/`,
   resetPassword: `${house}reset_password/`,
-
-  // /v1/build_num/
   my: `${house}my/`,
-  // changePassword: `${auth}password`,
-  // logout: `${auth}logout`,
-  // refresh_token: `${auth}login/refresh`,
-  // apps: `${apps}`,
-  // upload: `${apps}upload/`,
-  // download_link: `${apps}download/`,
-  // websites: `${websites}`,
-  // webapps: `${websites}apps/`,
-  // types: `${websites}types/`,
-  // categories: `${websites}categories/`,
-  // labels: `${websites}labels/`,
-  // staff: `${host}accounts/v1/staff/`,
+  // /v1/car_floor_list/
+  carFilter: `${house}car_floor_list/`,
+  car: `${house}manager_car/`,
 };

@@ -102,7 +102,13 @@ export default {
         {
           icon: "apps",
           text: this.$t("nav.apps"),
-          path: "/apps?website=1",
+          path: "/apps",
+          show: true,
+        },
+        {
+          icon: "apps",
+          text: "车位详情",
+          path: "/cars",
           show: true,
         },
         {
