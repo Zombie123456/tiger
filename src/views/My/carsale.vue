@@ -72,7 +72,7 @@
                 class="d-flex  justify-start text-left flex-wrap"
               >
                 <v-col cols="6">
-                  类型:{{ m.set_type === 1 ? "标准" : "子母" }}
+                  类型:{{ m.set_type == 1 ? "标准" : "子母" }}
                 </v-col>
                 <v-col cols="6">
                   全款:
@@ -335,7 +335,7 @@ export default {
       this.modifyDetail = Object.assign({}, this.houseDetail);
 
       this.ifFullMoney = this.modifyDetail.is_full_money ? "是" : "否";
-      this.ifMother = this.modifyDetail.set_type === 1 ? "标准" : "子母";
+      this.ifMother = this.modifyDetail.set_type == 1 ? "标准" : "子母";
       // : ["可售房源", "销控房源", "签约房源", "全款到账"],
       this.houseStatus = this.modifyDetail.status === 0 ? false : true;
       this.dialog = true;
@@ -356,7 +356,7 @@ export default {
       }
       let houseId = this.modifyDetail.id;
       let houseStatus = this.houseStatus ? 1 : 0;
-      this.ifMother = this.modifyDetail.set_type === 1 ? "标准" : "子母";
+      this.ifMother = this.modifyDetail.set_type == 1 ? "标准" : "子母";
       let body = {
         is_full_money: this.modifyDetail.is_full_money,
         phone: this.modifyDetail.phone,
