@@ -1,230 +1,154 @@
 <template>
   <v-container>
-    <v-row class="house-header">
-      <div style="width:200px;" class="mr-2">
-        <v-select
-          v-model="is_active"
-          :hint="`${is_active.name}, ${is_active.id}`"
-          :items="buildingList"
-          item-value="id"
-          item-text="name"
-          label="楼盘选择"
-          hide-details="true"
-          outlined
-          dense
-          return-object
-          persistent-hint
-        >
-        </v-select>
-      </div>
-    </v-row>
-    <v-row>
-      <!-- <v-col cols="12" class="house-title d-flex  justify-center text-center">
-        <v-col cols="1" style="font-size: 20px;">
-          楼层
-        </v-col>
-        <v-col cols="11">
-          <span style="font-size: 20px;"> 房源信息</span>
-          <span class="demo-color can-sale"></span> 可售房源
-          <span class="demo-color kongxiao"></span> 销控房源
-          <span class="demo-color qianyue"></span> 签约房源
-          <span class="demo-color quankuan"></span> 全款到账
-        </v-col>
-      </v-col> -->
-      <v-col
-        cols="12"
-        class="house-item  d-flex  justify-center text-center flex-wrap"
-        v-for="(item, index) in allHouseList"
-        :key="index"
-      >
-        <v-col cols="12"> 第{{ index }}层 </v-col>
-        <v-col cols="12" class="d-flex  justify-start text-left flex-wrap">
-          <div class="item" v-for="(m, i) in item" :key="i">
-            <!-- houseAllStatus: ["可售房源", "销控房源", "签约房源", "全款到账"], -->
-            <v-card
-              @click="changeStatus(m)"
-              :class="
-                m.status === 0
-                  ? 'can-sale'
-                  : m.status === 1
-                  ? 'kongxiao'
-                  : m.status === 2
-                  ? 'qianyue'
-                  : m.status === 3
-                  ? 'quankuan'
-                  : ''
-              "
-            >
-              <v-col
-                cols="12"
-                class="d-flex  justify-start text-left flex-wrap"
-              >
-                <v-col cols="6">
-                  户号: <span class="red--text">{{ m.room_num }}</span>
-                </v-col>
-                <v-col cols="6">户型:{{ m.unit_type }}</v-col>
-              </v-col>
-              <v-col
-                cols="12"
-                class="d-flex  justify-start text-left flex-wrap"
-              >
-                <v-col cols="6">面积:{{ m.area }} m<sup>2</sup></v-col>
-                <v-col cols="6">
-                  全款:
-                  <span :class="m.is_full_money ? 'red--text' : ''">{{
-                    m.is_full_money ? "是" : "否"
-                  }}</span>
-                </v-col>
-              </v-col>
-              <v-col
-                cols="12"
-                class="d-flex  justify-start text-left flex-wrap"
-              >
-                <v-col cols="6">
-                  单价:{{ parseFloat(m.unit_price).toFixed(2) }}元
-                </v-col>
-                <v-col cols="6">
-                  状态:{{
-                    m.status === 0
-                      ? "可售房源"
-                      : m.status === 1
-                      ? "销控房源"
-                      : m.status === 2
-                      ? "签约房源"
-                      : m.status === 3
-                      ? "全款到账"
-                      : "没有状态"
-                  }}
-                </v-col>
-              </v-col>
-              <v-col
-                cols="12"
-                class="d-flex  justify-start text-left flex-wrap"
-              >
-                <v-col cols="6">
-                  总价:{{ parseFloat(m.price).toFixed(2) }}元
-                </v-col>
-                <v-col cols="6" v-if="m.phone"> 电话:{{ m.phone }} </v-col>
-              </v-col>
-              <v-col
-                cols="12"
-                v-if="m.memo"
-                class="d-flex  justify-start text-left flex-wrap"
-              >
-                <v-col cols="12">
-                  备注:
-                  <span class="red--text">{{ m.memo }} </span></v-col
-                >
-              </v-col>
-            </v-card>
-          </div>
-        </v-col>
-      </v-col>
-    </v-row>
-    <v-dialog v-model="dialog">
-      <v-card class="card-cn">
-        <v-card-title class="headline grey lighten-2" primary-title>
-          锁定此房源
-        </v-card-title>
-        <v-row class="form-box">
-          <!-- 户号，户型，面积，单价，总价，状态，楼盘，楼层，是否全款 -->
-          <v-form
-            ref="form"
-            v-model="valid"
-            :lazy-validation="lazy"
-            class="form-content"
+    <v-row class="content">
+      <v-row class="house-header d-flex justify-space-around">
+        <div style="width:40%;" height="30">
+          <v-select
+            v-model="property_active"
+            :hint="`${property_active.name}, ${property_active.id}`"
+            :items="propertyList"
+            item-value="id"
+            item-text="name"
+            label="楼盘"
+            hide-details="true"
+            outlined
+            dense
+            return-object
+            persistent-hint
           >
-            <v-col cols="12" class="d-flex  justify-center text-left flex-wrap">
-              <v-col cols="8">
-                <v-text-field
-                  v-model="is_activeClone"
-                  disabled
-                  label="楼盘"
-                ></v-text-field>
-              </v-col>
-
-              <v-col cols="4">
-                <v-text-field
-                  v-model="modifyDetail.floor"
-                  label="楼层"
-                  disabled
-                ></v-text-field>
-              </v-col>
-            </v-col>
-            <v-col cols="12" class="d-flex  justify-center text-left flex-wrap">
-              <v-col cols="8">
-                <v-text-field
-                  v-model="modifyDetail.room_num"
-                  disabled
-                  label="户号"
-                ></v-text-field>
-              </v-col>
-              <v-col cols="4">
-                <v-text-field
-                  v-model="modifyDetail.unit_type"
-                  label="户型"
-                  disabled
-                ></v-text-field>
-              </v-col>
-            </v-col>
-
-            <v-col cols="12" class="d-flex  justify-center text-left flex-wrap">
-              <v-col cols="6">
-                <v-switch
-                  v-model="houseStatus"
-                  class="ma-2"
-                  label="销控"
-                ></v-switch>
-              </v-col>
-              <v-col cols="6">
-                <v-switch
-                  v-model="modifyDetail.is_full_money"
-                  class="ma-2"
-                  label="全款"
-                ></v-switch>
-              </v-col>
-            </v-col>
-            <v-col cols="12" class="d-flex  justify-left text-left flex-wrap">
-              <v-text-field
-                v-model="modifyDetail.name"
-                label="姓名"
-              ></v-text-field>
-            </v-col>
-            <v-col cols="12" class="d-flex  justify-left text-left flex-wrap">
-              <v-text-field
-                v-model="modifyDetail.phone"
-                label="电话"
-              ></v-text-field>
-            </v-col>
-          </v-form>
+          </v-select>
+        </div>
+        <div style="width:40%;">
+          <v-select
+            v-model="building_active"
+            :hint="`${building_active.name}, ${building_active.id}`"
+            :items="buildingList"
+            item-value="id"
+            item-text="name"
+            label="楼栋"
+            hide-details="true"
+            outlined
+            dense
+            return-object
+            persistent-hint
+          >
+          </v-select>
+        </div>
+      </v-row>
+      <v-row class="item-detail">
+        <v-row
+          v-for="(item, index) in currentList"
+          :key="index"
+          class="item d-flex"
+          style="width: 100%;"
+        >
+          <v-col cols="2" class="left"> {{ index }}层 </v-col>
+          <v-col
+            cols="10"
+            class="right d-flex justify-start  text-center flex-wrap"
+          >
+            <div
+              v-for="(m, i) in item"
+              :key="i"
+              :class="m.status == 0 ? 'can-sale' : ''"
+              @click="goBuildingDetail(m)"
+            >
+              {{ m.room_num }}
+            </div>
+          </v-col>
         </v-row>
+      </v-row>
 
-        <v-divider></v-divider>
+      <v-snackbar
+        v-model="snackbar"
+        :color="snackbarColor"
+        :timeout="2000"
+        :top="true"
+      >
+        {{ text }}
+      </v-snackbar>
+    </v-row>
 
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn color="primary" text @click="dialog = false">
-            取消
-          </v-btn>
-          <v-btn color="primary" text @click="changeHouseStatus()">
-            确认
-          </v-btn>
-        </v-card-actions>
+    <v-dialog
+      v-model="dialog"
+      fullscreen
+      hide-overlay
+      transition="dialog-bottom-transition"
+    >
+      <v-card class="draw-content">
+        <v-toolbar dark color="primary">
+          <v-spacer class="text-center">房源信息</v-spacer>
+          <v-toolbar-items>
+            <v-btn dark text @click="dialog = false">关闭</v-btn>
+          </v-toolbar-items>
+        </v-toolbar>
+        <v-row class="d-flex justify-start item-color">
+          <v-col cols="12" class="d-flex justify-start  flex-wrap">
+            <v-col cols="5">
+              <v-text-field
+                label="楼盘名称"
+                disabled
+                :value="property_active.name || '无'"
+              ></v-text-field>
+            </v-col>
+            <v-col cols="5">
+              <v-text-field
+                :label="currentItemDetail.is_car ? '车位号' : '房号'"
+                disabled
+                :value="currentItemDetail.room_num || '无'"
+              ></v-text-field>
+            </v-col>
+            <v-col cols="5">
+              <v-text-field
+                :label="currentItemDetail.is_car ? '类型' : '户型'"
+                disabled
+                :value="
+                  `${
+                    !currentItemDetail.is_car
+                      ? currentItemDetail.unit_type
+                      : currentItemDetail.set_type == 1
+                      ? '标准'
+                      : '子母'
+                  }`
+                "
+              ></v-text-field>
+            </v-col>
+            <v-col cols="5">
+              <v-text-field
+                label="楼层"
+                disabled
+                :value="currentItemDetail.floor || '无'"
+              ></v-text-field>
+            </v-col>
+            <v-col cols="5">
+              <v-text-field
+                label="预测绘面积"
+                disabled
+                :value="currentItemDetail.area || '无'"
+              ></v-text-field>
+            </v-col>
+            <v-col cols="5">
+              <v-text-field
+                label="单价"
+                disabled
+                :value="currentItemDetail.unit_price || '无'"
+              ></v-text-field>
+            </v-col>
+            <v-col cols="5">
+              <v-text-field
+                label="总价"
+                disabled
+                :value="currentItemDetail.price || '无'"
+              ></v-text-field>
+            </v-col>
+          </v-col>
+        </v-row>
       </v-card>
     </v-dialog>
-    <v-snackbar
-      v-model="snackbar"
-      :color="snackbarColor"
-      :timeout="2000"
-      :top="true"
-    >
-      {{ text }}
-    </v-snackbar>
   </v-container>
 </template>
 <script>
 import api from "@/api/apis";
-import { mapState } from "vuex";
 import $ from "../../utils/util";
 import axios from "axios";
 
@@ -235,110 +159,70 @@ export default {
       text: "",
       snackbarColor: "",
       snackbar: false,
-      allHouseList: "",
+      property_active: {},
+      propertyList: [],
+      building_active: {},
       buildingList: [],
-      buildingClone: [],
-      houseDetail: {},
-      modifyDetail: {},
+      currentList: [],
+      currentItemDetail: {},
       dialog: false,
-      is_active: {},
-      is_activeClone: {},
-      valid: true,
-      name: "",
-      nameRules: [(v) => !!v || "必填"],
-      email: "",
-      select: null,
-      items: ["是", "否"],
-      houseStatus: false,
-      houseAllStatus: ["可售房源", "销控房源", "签约房源", "全款到账"],
-      checkbox: false,
-      lazy: false,
+      sound: true,
+      widgets: false,
     };
   },
   watch: {
-    is_active(val) {
-      this.getHouse(val.id);
+    building_active(val) {
+      this.getItemList(val.id);
     },
   },
   created() {
-    this.getBuilding();
-    // this.getHouse();
+    this.getProperty();
     this.lang = $.getLanguage() == "zh_CN" ? "zh-cn" : "";
   },
-  computed: {
-    ...mapState({
-      role: (state) => state.role,
-    }),
-  },
+  computed: {},
   methods: {
-    getBuilding() {
-      axios.get(`${api.building}`).then((res) => {
-        this.buildingList = res.data;
-        // this.buildingClone = Object.assign({}, this.buildingList);
-        this.buildingList.forEach((i) => {
-          this.buildingClone.push(i.name);
-        });
-        this.is_active = this.buildingList[0];
-        this.getHouse(res.data[0].id);
-      });
-    },
-    getHouse(id) {
-      axios.get(`${api.sellerBuilding}?build_num=${id}`).then((res) => {
-        if (res.data.code === 2000) {
-          this.allHouseList = res.data.data;
-        } else if (res.data.code === 4010) {
+    getProperty() {
+      axios.get(`${api.getProperty}`).then((res) => {
+        if (res.data.code == 4010) {
+          this.text = "身份信息已失效，请重新登录";
+          this.snackbar = true;
+          this.snackbarColor = "red";
           this.$router.push("/login");
+        } else if (res.data.code == 2000) {
+          this.propertyList = res.data.data;
+          this.property_active = res.data.data[0];
+          this.getBuilding();
         }
       });
     },
-    changeStatus(val) {
-      this.houseDetail = val;
-      this.is_activeClone = this.is_active.name;
-      this.modifyDetail = Object.assign({}, this.houseDetail);
-      // : ["可售房源", "销控房源", "签约房源", "全款到账"],
-      this.houseStatus = this.modifyDetail.status === 0 ? false : true;
-      this.dialog = true;
+    getBuilding() {
+      axios.get(`${api.getBuilding}`).then((res) => {
+        this.buildingList = res.data;
+        this.building_active = res.data[0];
+      });
     },
-    reset() {
-      this.$refs.form.reset();
+    getItemList(val) {
+      axios.get(`${api.getItemList}?build_num=${val}`).then((res) => {
+        this.currentList = res.data.data;
+      });
     },
-    validate() {
-      this.$refs.form.validate();
-    },
-    resetValidation() {
-      this.$refs.form.resetValidation();
-    },
-    changeHouseStatus() {
-      let flag = this.$refs.form.validate();
-      if (!flag) {
+    goBuildingDetail(val) {
+      console.log(val);
+      if (val.status === 0) {
+        axios.get(`${api.getItemList}${val.id}/`).then((res) => {
+          if (res.data.code == 4010) {
+            this.text = "身份信息已失效，请重新登录";
+            this.snackbar = true;
+            this.snackbarColor = "red";
+            this.$router.push("/login");
+          } else if (res.data.code == 2000) {
+            this.currentItemDetail = res.data.data;
+            this.dialog = true;
+          }
+        });
+      } else {
         return;
       }
-      let houseId = this.modifyDetail.id;
-      let houseStatus = this.houseStatus ? 1 : 0;
-      let body = {
-        is_full_money: this.modifyDetail.is_full_money,
-        phone: this.modifyDetail.phone,
-        status: houseStatus,
-      };
-      console.log(body);
-      axios
-        .put(`${api.sellerBuilding}${houseId}/`, body)
-        .then((res) => {
-          if (res.data.code === 2000) {
-            this.getBuilding();
-            this.dialog = false;
-            this.snackbarColor = "success";
-            this.text = "更改数据成功";
-            this.snackbar = true;
-          } else {
-            this.snackbarColor = "warning";
-            this.text = res.data.msg;
-            this.snackbar = true;
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-        });
     },
   },
 };
@@ -346,77 +230,89 @@ export default {
 <style scope lang="scss">
 .container {
   padding: 0;
-}
-.v-date-picker-title__date {
-  font-size: 20px !important;
-}
-.house-header {
-  padding: 10px;
-}
-.house-title {
-  border-bottom: 1px solid #ccc;
-  .demo-color {
-    display: inline-block;
-    width: 10px;
-    height: 10px;
-    margin-left: 10px;
-  }
-  .can-sale {
-    background-color: #99ff98;
-  }
-  .kongxiao {
-    background-color: #accfea;
-  }
-  .qianyue {
-    background-color: #bdbdbd;
-  }
-  .quankuan {
-    background: #ffbc00;
-  }
-}
-.house-item {
-  font-size: 12px;
-  border-top: 1px solid #ccc;
-  .col-12 {
-    padding: 0px 6px 4px 4px;
-  }
-  .col-6 {
-    padding: 2px 2px;
-  }
-}
-.item {
+  margin-bottom: 10px;
+  height: 100%;
   width: 100%;
-  margin: 1%;
-  .can-sale {
-    background-color: #99ff98;
+  .row {
+    margin: 0;
   }
-  .kongxiao {
-    background-color: #accfea;
+  .v-input {
+    font-size: 12px;
   }
-  .qianyue {
-    background-color: #bdbdbd;
+  .house-header {
+    padding: 10px;
+    // background: #1976d2;
+    // .theme--light.v-label {
+    //   color: #fff;
+    // }
   }
-  .quankuan {
-    background: #ffbc00;
+  .item-detail {
+    height: calc(100% - 61px);
+    .col2,
+    .col,
+    .col3,
+    .col10 {
+      padding: 0;
+    }
+  }
+  .item {
+    display: block;
+  }
+  .left {
+    border-top: 1px solid #fff;
+    border-left: 1px solid #fff;
+    font-size: 13px;
+    background-color: #49c2c7;
+    height: 26px;
+    line-height: 26px;
+    text-align: center;
+  }
+  .right {
+    font-size: 12px;
+    div {
+      height: 26px;
+      line-height: 26px;
+      display: inline-block;
+      height: 26px;
+      padding: 1px;
+      line-height: 26px;
+      min-width: 20%;
+      max-width: 25%;
+      background: #5dcdef;
+      border-top: 1px solid #fff;
+      border-left: 1px solid #fff;
+      flex: auto;
+    }
+    .can-sale {
+      background-color: #e0e0e0;
+    }
   }
 }
-.form-content {
-  .col-12 {
-    padding: 10px 12px 0 12px;
-  }
-}
-.form-box {
-  width: 90%;
-  margin: 0 auto;
-}
-.card-cn {
-  .col-12 {
-    padding: 4px 10px 0 10px;
-  }
+.draw-content {
   .col-6,
-  .col-8,
-  .col-4 {
-    padding: 0 4px 0 0;
+  .col-4,
+  .col-8 {
+    padding: 0;
+  }
+  .col-5 {
+    margin-left: 6%;
+    padding: 0 12px;
+  }
+  .detail-name {
+    display: inline-block;
+    width: 100px;
+    height: 30px;
+    background: #ccc;
+    line-height: 30px;
+  }
+  .item-color {
+    color: #000;
+  }
+  .theme--light.v-label--is-disabled {
+    color: #101010;
+  }
+  .theme--light.v-input--is-disabled input {
+    color: #1f8cff !important;
   }
 }
 </style>

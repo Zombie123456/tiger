@@ -1,6 +1,5 @@
 <template>
   <v-app id="app">
-    <side-bar :show-nav="showNav" :username="username"></side-bar>
     <v-content>
       <router-view></router-view>
     </v-content>
@@ -8,7 +7,6 @@
 </template>
 
 <script>
-import SideBar from "./components/SideBar";
 import $ from "./utils/util";
 import api from "@/api/apis";
 import axios from "axios";
@@ -26,9 +24,7 @@ export default {
       window.document.cookie = `username=${newObj}`;
     },
   },
-  components: {
-    SideBar,
-  },
+  components: {},
   computed: {
     showNav() {
       return this.$route.name !== "login";

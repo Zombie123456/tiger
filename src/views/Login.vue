@@ -3,7 +3,7 @@
     <v-content>
       <v-container class="fill-height" fluid>
         <v-row align="center" justify="center">
-          <v-col cols="12" sm="8" md="3">
+          <v-col cols="10" sm="8" md="3">
             <v-card class="elevation-12">
               <v-card-title class="form-title">
                 用户登录
@@ -91,7 +91,7 @@ export default {
             this.snackbar = {
               color: "red",
               show: true,
-              text: "此账号不能登录",
+              text: data.msg,
             };
           } else {
             let d = new Date(data.expires_in);
