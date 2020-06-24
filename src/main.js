@@ -39,30 +39,6 @@ if (VueCookie.get("access_token")) {
   )}`;
 }
 
-// axios.interceptors.response.use(
-//   (response) => {
-//     if (response.status === 200) {
-//       return response;
-//     } else if (response.data.code === 4010) {
-//       router.push({
-//         path: "/login",
-//         query: {
-//           next: router.fullPath,
-//         },
-//       });
-//     } else {
-//       return Promise.reject(response.data.msg);
-//     }
-//   },
-//   () => {
-//     return Promise.reject(
-//       Vue.config.lang === "cn"
-//         ? "服务异常，请稍后再试"
-//         : "An error occured. Please try again later."
-//     );
-//   }
-// );
-
 const navLang = navigator.language || navigator.userLanguage;
 if (navLang === "zh-CN" || navLang === "zh-cn") {
   Vue.config.lang = "cn";

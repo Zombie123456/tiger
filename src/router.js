@@ -47,14 +47,14 @@ export default new Router({
       },
     },
     {
-      path: "/cars",
+      path: "/upload",
       name: "Cars",
       component: function(resolve) {
-        require(["./views/Main/Cars.vue"], resolve);
+        require(["./views/Main/Upload.vue"], resolve);
       },
       meta: {
-        icon: "apps",
-        title: "车位详情",
+        icon: "mdi-cloud-upload",
+        title: "数据导入",
       },
     },
     {

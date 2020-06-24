@@ -412,20 +412,19 @@ export default {
     toggleStatus(id, status, username) {
       this.toggleLoading = true;
       axios
-        .put(api.staff + id + "/", {
+        .put(api.getStaff + id + "/", {
           username: username,
           status: status ? 1 : 0,
         })
         .then(
           (response) => {
-            let status_text = response.status
-              ? this.$t("status.enabled")
-              : this.$t("status.disabled");
-            this.snackbar = {
-              color: "success",
-              show: true,
-              text: `[${this.$t("common.status")}]: ${status_text}`,
-            };
+            if (response.data.code === 2000) {
+              this.snackbar = {
+                color: "success",
+                show: true,
+                text: `更改成功`,
+              };
+            }
           },
           (error) => {
             this.snackbar = {
@@ -456,3 +455,8 @@ export default {
   },
 };
 </script>
+<style scoped lang="scss">
+.container {
+  padding: 12px;
+}
+</style>

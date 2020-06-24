@@ -25,7 +25,7 @@
             </v-avatar>
           </v-row>
           <v-layout justify-center mb5>
-            <small>{{ username }}</small>
+            <small>{{ role.username }}</small>
           </v-layout>
           <v-spacer></v-spacer>
           <v-layout justify-start>
@@ -106,9 +106,9 @@ export default {
           show: true,
         },
         {
-          icon: "apps",
-          text: "车位详情",
-          path: "/cars",
+          icon: "mdi-cloud-upload",
+          text: "数据导入",
+          path: "/upload",
           show: true,
         },
         {
@@ -127,13 +127,10 @@ export default {
   },
   watch: {
     role(val) {
-      console.log("val");
-      console.log(val);
-      console.log(val);
-      console.log(val);
       let flag = val.role.key == "manager" ? true : false;
       console.log(flag);
       this.items[1].show = flag;
+      this.items[2].show = flag;
     },
   },
   methods: {
