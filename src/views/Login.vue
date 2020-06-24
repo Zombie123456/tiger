@@ -84,8 +84,6 @@ export default {
     login() {
       axios.post(api.login, qs.stringify(this.user)).then(
         (data) => {
-          console.log(data);
-          console.log(data.data);
           data = data.data;
           if (data.code === 9009) {
             this.snackbar = {
@@ -113,7 +111,7 @@ export default {
             }
             this.$root.getMy();
             let url = this.$route.query.next;
-            url = url ? decodeURIComponent(url.split("?")[0]) : "/apps";
+            url = url ? decodeURIComponent(url.split("?")[0]) : "/";
             this.$router.push(url);
           }
         },

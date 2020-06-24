@@ -17,7 +17,7 @@ export default new Router({
       },
     },
     {
-      path: "/apps",
+      path: "/",
       name: "Apps",
       component: function(resolve) {
         require(["./views/Main/Apps.vue"], resolve);

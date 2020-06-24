@@ -42,9 +42,11 @@
           class="item d-flex"
           style="width: 100%;"
         >
-          <v-col cols="2" class="left"> {{ index }}层 </v-col>
+          <v-col :cols="item && item[0].is_car ? '12' : '2'" class="left">
+            {{ index }}层
+          </v-col>
           <v-col
-            cols="10"
+            :cols="item && item[0].is_car ? '12' : '10'"
             class="right d-flex justify-start  text-center flex-wrap"
           >
             <div
@@ -171,8 +173,11 @@ export default {
     };
   },
   watch: {
-    building_active(val) {
-      this.getItemList(val.id);
+    building_active() {
+      this.getItemList();
+    },
+    property_active() {
+      this.getBuilding();
     },
   },
   created() {
@@ -191,23 +196,26 @@ export default {
         } else if (res.data.code == 2000) {
           this.propertyList = res.data.data;
           this.property_active = res.data.data[0];
-          this.getBuilding();
+          // this.getBuilding();
         }
       });
     },
     getBuilding() {
-      axios.get(`${api.getBuilding}`).then((res) => {
-        this.buildingList = res.data;
-        this.building_active = res.data[0];
-      });
+      axios
+        .get(`${api.getBuilding}?community=${this.property_active.id}`)
+        .then((res) => {
+          this.buildingList = res.data.data;
+          this.building_active = res.data.data[0];
+        });
     },
-    getItemList(val) {
-      axios.get(`${api.getItemList}?build_num=${val}`).then((res) => {
-        this.currentList = res.data.data;
-      });
+    getItemList() {
+      axios
+        .get(`${api.getItemList}?build_num=${this.building_active.id}`)
+        .then((res) => {
+          this.currentList = res.data.data;
+        });
     },
     goBuildingDetail(val) {
-      console.log(val);
       if (val.status === 0) {
         axios.get(`${api.getItemList}${val.id}/`).then((res) => {
           if (res.data.code == 4010) {
@@ -230,7 +238,6 @@ export default {
 <style scope lang="scss">
 .container {
   padding: 0;
-  margin-bottom: 10px;
   height: 100%;
   width: 100%;
   .row {
@@ -241,10 +248,6 @@ export default {
   }
   .house-header {
     padding: 10px;
-    // background: #1976d2;
-    // .theme--light.v-label {
-    //   color: #fff;
-    // }
   }
   .item-detail {
     height: calc(100% - 61px);

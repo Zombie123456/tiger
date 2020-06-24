@@ -20,7 +20,6 @@ export default {
   },
   watch: {
     username(newObj) {
-      console.log(window.document.cookie);
       window.document.cookie = `username=${newObj}`;
     },
   },
@@ -59,19 +58,11 @@ export default {
       );
     },
     getMy() {
-      console.log("我的");
-
       if (!this.$cookie.get("access_token")) {
         return;
       }
-      console.log("进来了");
       axios.get(api.my).then((response) => {
-        console.log(response);
-        console.log(response.data);
-        console.log(response.data.data);
         this.username = response.data.data.username;
-        console.log(response.data.data.role);
-        console.log(this.$store.store);
         let save = response.data.data;
         this.$store.dispatch("saveRole", save);
         this.setUpAuth();
@@ -79,7 +70,6 @@ export default {
       });
     },
     refresh() {
-      console.log("刷新");
       let refreshToken = this.$cookie.get("refresh_token");
       if (!refreshToken) {
         return;
