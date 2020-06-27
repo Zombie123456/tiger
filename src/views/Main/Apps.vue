@@ -356,7 +356,9 @@ export default {
             {},
             this.currentItemDetailSave
           );
-          this.zimu_active = this.set_type == 1 ? "标准" : "子母";
+          console.log(this.currentItemDetail.set_type);
+          this.zimu_active =
+            this.currentItemDetail.set_type == 1 ? "标准" : "子母";
           this.is_full_money_active = this.currentItemDetail.is_full_money
             ? "是"
             : "否";
@@ -389,7 +391,7 @@ export default {
           ? 2
           : 3;
       let zimuActive = this.zimu_active == "标准" ? 1 : 0;
-      this.zimu_active = this.set_type == 1 ? "标准" : "子母";
+      this.zimu_active = this.currentItemDetail.set_type == 1 ? "标准" : "子母";
       let body = {
         area: this.currentItemDetail.area,
         build_num: this.changeBuilding_active.id,
