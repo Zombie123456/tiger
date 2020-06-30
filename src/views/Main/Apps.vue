@@ -72,7 +72,7 @@
               ]"
               @click="goBuildingDetail(m)"
             >
-              {{ m.room_num }}
+              {{ m.room_num }} <span style="color: red;">{{m.car_num ? '|' : ''}}</span> {{ m.car_num}}
               <span v-if="m.status == 3" class="arelady-pay">ν</span>
             </div>
           </v-col>
@@ -166,6 +166,12 @@
               <v-text-field
                 :label="currentItemDetail.is_car ? '车位号' : '房号'"
                 v-model="currentItemDetail.room_num"
+              ></v-text-field>
+            </v-col>
+            <v-col cols="5" class="mt-3" v-if="currentItemDetail.car_num">
+              <v-text-field
+                label="子车位号"
+                v-model="currentItemDetail.car_num"
               ></v-text-field>
             </v-col>
             <v-col cols="5" class="mt-3" v-if="!currentItemDetail.is_car">
@@ -297,7 +303,12 @@ export default {
     this.getProperty();
     this.lang = $.getLanguage() == "zh_CN" ? "zh-cn" : "";
   },
-  computed: {},
+  computed: {
+    currentRoomNum(val) {
+
+     return  val.room_num 
+    }
+  },
   methods: {
     getProperty() {
       axios.get(`${api.getProperty}`).then((res) => {
@@ -394,6 +405,7 @@ export default {
       this.zimu_active = this.currentItemDetail.set_type == 1 ? "标准" : "子母";
       let body = {
         area: this.currentItemDetail.area,
+        car_num: this.currentItemDetail.car_num,
         build_num: this.changeBuilding_active.id,
         is_full_money: fullMoney,
         floor: this.currentItemDetail.floor,
