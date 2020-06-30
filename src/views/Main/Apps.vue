@@ -55,7 +55,7 @@
               :class="m.status == 0 ? 'can-sale' : ''"
               @click="goBuildingDetail(m)"
             >
-              {{ m.room_num }}
+              {{ m.room_num }} <span style="color: red;">{{m.car_num ? '|' : ''}}</span> {{ m.car_num&&m.car_num.split('-')[2]}}
             </div>
           </v-col>
         </v-row>
@@ -98,6 +98,13 @@
                 :label="currentItemDetail.is_car ? '车位号' : '房号'"
                 disabled
                 :value="currentItemDetail.room_num || '无'"
+              ></v-text-field>
+            </v-col>
+             <v-col cols="5" v-if="currentItemDetail.car_num">
+              <v-text-field
+                label="子车位号"
+                disabled
+                :value="currentItemDetail.car_num"
               ></v-text-field>
             </v-col>
             <v-col cols="5">
@@ -279,7 +286,9 @@ export default {
       height: 26px;
       padding: 1px;
       line-height: 26px;
-      min-width: 20%;
+      // min-width: 20%;
+      // max-width: 25%;
+      width: 25%;
       max-width: 25%;
       background: #5dcdef;
       border-top: 1px solid #fff;
